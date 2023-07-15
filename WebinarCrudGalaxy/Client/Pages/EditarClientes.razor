@@ -1,0 +1,31 @@
+﻿@page "/clientes/editar/{Id:int}"
+@using WebinarCrudGalaxy.Shared
+@inject NavigationManager NavigationManager
+@inject HttpClient HttpClient
+
+<ClientesEdit ClienteDtoRequest="Cliente" OnGrabar="EditarCliente" Titulo="Editar un cliente" />
+
+@code {
+    public ClienteDtoRequest Cliente { get; set; } = new ClienteDtoRequest();
+
+    [Parameter]
+    public int Id { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var response = await HttpClient.GetFromJsonAsync<ClienteDtoRequest>($"api/Clientes/{Id}");
+
+        if (response is not null)
+        {
+            Cliente = response;
+        }
+    }
+
+    private async Task EditarCliente()
+    {
+        await HttpClient.PutAsJsonAsync($"api/Clientes/{Id}", Cliente);
+
+        NavigationManager.NavigateTo("/clientes");
+    }
+
+}

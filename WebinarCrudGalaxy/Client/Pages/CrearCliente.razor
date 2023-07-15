@@ -1,0 +1,20 @@
+﻿@page "/clientes/crear"
+@using WebinarCrudGalaxy.Shared
+@inject NavigationManager NavigationManager
+@inject HttpClient HttpClient
+
+<ClientesEdit ClienteDtoRequest="ClienteDtoRequest" 
+              OnGrabar="GrabarNuevoCliente"
+              Titulo="Nuevo Cliente" />
+
+@code {
+
+    public ClienteDtoRequest ClienteDtoRequest { get; set; } = new ClienteDtoRequest();
+
+    public async Task GrabarNuevoCliente()
+    {
+        await HttpClient.PostAsJsonAsync("api/Clientes", ClienteDtoRequest);
+
+        NavigationManager.NavigateTo("/clientes");
+    }
+}

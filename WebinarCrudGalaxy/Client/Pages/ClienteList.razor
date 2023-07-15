@@ -1,0 +1,81 @@
+﻿@page "/clientes"
+@using WebinarCrudGalaxy.Shared
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+
+<h2>Lista de Clientes</h2>
+
+@if (Clientes is null)
+{
+    <p>Cargando....</p>
+}
+else if (!Clientes.Any())
+{
+    <p class="alert alert-warning">Sin datos para mostrar</p>
+}
+else
+{
+    <table class="table table-primary table-bordered table-hover">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombres</th>
+            <th>Apellidos</th>
+            <th>Email</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Clientes)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.Nombres</td>
+                    <td>@item.Apellidos</td>
+                    <td>@item.Email</td>
+                    <td>
+                        <button class="btn btn-outline-dark" @onclick="() => Editar(item.Id)"><i class="oi oi-pencil"></i></button>
+                        <button class="btn btn-danger" @onclick="() => Eliminar(item.Id)"><i class="oi oi-trash"></i></button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+      
+    </table>
+}
+
+<button class="btn btn-primary" @onclick="CrearNuevo">Crear nuevo Cliente</button>
+
+@code {
+
+    public ICollection<ClienteDtoResponse>? Clientes { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarDatos();
+    }
+
+    private async Task CargarDatos()
+    {
+        Clientes = await HttpClient.GetFromJsonAsync<ICollection<ClienteDtoResponse>>("api/Clientes");
+    }
+
+    private void CrearNuevo()
+    {
+        NavigationManager.NavigateTo("/clientes/crear");
+    }
+
+    private void Editar(int id)
+    {
+        NavigationManager.NavigateTo($"/clientes/editar/{id}");
+    }
+
+    private async Task Eliminar(int id)
+    {
+        await HttpClient.DeleteAsync($"api/Clientes/{id}");
+
+        await CargarDatos();
+    }
+
+}

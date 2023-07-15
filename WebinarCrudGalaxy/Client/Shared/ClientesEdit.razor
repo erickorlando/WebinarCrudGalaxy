@@ -1,0 +1,52 @@
+﻿@using WebinarCrudGalaxy.Shared
+<h3>@Titulo</h3>
+
+@if (ClienteDtoRequest is not null)
+{
+    <EditForm Model="ClienteDtoRequest" OnValidSubmit="Grabar">
+        <DataAnnotationsValidator />
+        
+        <div class="card">
+            <div class="card-body">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="nombres" @bind-value="@ClienteDtoRequest.Nombres" />
+                    <label for="nombres" class="form-label">Nombres:</label>
+                    <ValidationMessage For="@(() => ClienteDtoRequest.Nombres)" />
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="apellidos" @bind-value="@ClienteDtoRequest.Apellidos" />
+                    <label for="apellidos" class="form-label">Apellidos:</label>
+                    <ValidationMessage For="@(() => ClienteDtoRequest.Apellidos)" />
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="email" @bind-value="@ClienteDtoRequest.Email" />
+                    <label for="email" class="form-label">Email:</label>
+                    <ValidationMessage For="@(() => ClienteDtoRequest.Email)" />
+                </div>
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary">Grabar</button>
+            </div>
+        </div>
+        
+    </EditForm>
+}
+
+@code {
+
+    [Parameter]
+    public string Titulo { get; set; } = "Crear nuevo Cliente";
+
+    [Parameter]
+    public ClienteDtoRequest? ClienteDtoRequest { get; set; } 
+
+
+    [Parameter]
+    public EventCallback OnGrabar { get; set; }
+
+    private void Grabar()
+    {
+        OnGrabar.InvokeAsync();
+    }
+
+}
